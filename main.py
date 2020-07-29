@@ -2,25 +2,60 @@ import os
 import sys
 import random
 os.environ['LOGURU_AUTOINIT'] = 'False'
+import discord
 from loguru import logger
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from twsc_calendar import TWSCCalendar
 
-bot = commands.Bot(command_prefix='!', help_command=None, case_insensitive=True)
+activity = discord.Activity(
+    name='輸入 @藍兔小粉絲',
+    type=discord.ActivityType.playing
+)
+
+bot = commands.Bot(
+    command_prefix='!',
+    help_command=None,
+    case_insensitive=True,
+    activity=activity
+)
+
 tc = TWSCCalendar()
 
 def log(msg):
     logger.info(msg)
 
+async def get_channel(chid):
+    for ch in bot.get_all_channels():
+        if ch.id == chid:
+            await ch.send('Restarting done.')
+            break
+
 @bot.event
 async def on_ready():
     log(f'{bot.user} Ready!')
+    if os.path.exists('flag'):
+        chid = int(open('flag', 'r').read())
+        await get_channel(chid)
+        os.remove('flag')
 
 @bot.event
 async def on_message(ctx):
+    msg = ctx.content.replace('\n', ' ')
+
     if ctx.content.startswith('!'):
-        log(f'{ctx.author}: {ctx.content}')
+        log(f'{ctx.author}: {msg}')
+
+    if ctx.author == bot.user:
+        log(f'{ctx.author}: {msg}')
+
+    if bot.user in ctx.mentions:
+        await ctx.channel.send(
+            '`!近期比賽` 可以列出最近的星海比賽\n'
+            '`!近期可報名` 可以列出最近可以報名的星海比賽\n\n'
+            '其他指令請參考 https://git.io/JJuba'
+        )
+
     await commands.Bot.on_message(bot, ctx)
 
 @bot.event
@@ -42,6 +77,15 @@ async def cmd_recent(ctx):
         '<http://play.afreecatv.com/gsltw>\n'
         'AfreecaTV 艾菲卡臺灣星海中文轉播台\n'
         '<http://play.afreecatv.com/aftwsc2>\n'
+    )
+
+@bot.command(name='近期可報名')
+async def cmd_recent_sign(ctx):
+    print(ctx.guild.emojis)
+    await ctx.channel.send(
+        '【近期可報名賽事】\n\n'
+        f'{tc.get_recent_sign()}\n\n'
+        '若需要協助請洽 https://discord.gg/SwX9KMj'
     )
 
 @bot.command(name='星海比賽', aliases=['比賽', 'b', 'bracket', '賽程', '賽程表'])
@@ -111,6 +155,30 @@ async def cmd_illusion(ctx):
 @bot.command(name='藉口', aliases=['excuse'])
 async def cmd_excuse(ctx):
     await ctx.channel.send('成功的人找方法，失敗的人找藉口。')
+
+def check_auth(ctx):
+    if ctx.guild.id != int(os.getenv('AUTH_GUILD')):
+        return False
+
+    if ctx.author.id != int(os.getenv('AUTH_USER')):
+        return False
+
+    return True
+
+@bot.command(name='bye')
+@commands.check(check_auth)
+async def cmd_bye(ctx):
+    await ctx.channel.send('Bye!')
+    await bot.logout()
+    await bot.close()
+
+@bot.command(name='r')
+@commands.check(check_auth)
+async def cmd_bye(ctx):
+    await ctx.channel.send('Restarting...')
+    open('flag', 'w').write(f'{ctx.channel.id}')
+    await bot.logout()
+    await bot.close()
 
 def set_logger():
     log_format = (
