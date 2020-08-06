@@ -21,6 +21,18 @@ bot = commands.Bot(
     activity=activity
 )
 
+activity = discord.Activity(
+    name='輸入 @藍兔小粉絲',
+    type=discord.ActivityType.playing
+)
+
+bot = commands.Bot(
+    command_prefix='!',
+    help_command=None,
+    case_insensitive=True,
+    activity=activity
+)
+
 tc = TWSCCalendar()
 
 def log(msg):
@@ -82,7 +94,6 @@ async def cmd_recent(ctx):
 
 @bot.command(name='近期可報名')
 async def cmd_recent_sign(ctx):
-    print(ctx.guild.emojis)
     await ctx.channel.send(
         '【近期可報名賽事】\n\n'
         f'{tc.get_recent_sign()}\n\n'
