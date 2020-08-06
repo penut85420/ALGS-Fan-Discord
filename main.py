@@ -7,6 +7,7 @@ from loguru import logger
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 from twsc_calendar import TWSCCalendar
+from liquipedia import search_next
 
 activity = discord.Activity(
     name='輸入 @藍兔小粉絲',
@@ -112,6 +113,19 @@ async def cmd_algs(ctx):
 async def pos(ctx):
     await ctx.channel.send('星途(Path of Star) - 臺灣《星海爭霸II》募資邀請賽\nhttps://www.zeczec.com/projects/pathofstar')
 
+@bot.command(name='召喚')
+async def cmd_summon(ctx, *arg):
+    player = ' '.join(arg).strip()
+    if player == '':
+        await ctx.channel.send('指令格式：`!召喚 [選手名稱]`')
+        return
+
+    result = search_next(player)
+    if result is not None:
+        await ctx.channel.send(result)
+    else:
+        await ctx.channel.send(f'沒有找到 {player} 最近的比賽 QQ')
+
 @bot.command(name='nice')
 async def cmd_nice(ctx):
     nice_name = [
@@ -122,7 +136,30 @@ async def cmd_nice(ctx):
         '極限大師廿八星宿',
         '四大毒奶堅持天尊'
     ]
-    await ctx.channel.send(' <:nice:736140894927061023> '.join(nice_name) + ' <:nice:736140894927061023>')
+    msg = ' <:nice:736140894927061023> '.join(nice_name) + ' <:nice:736140894927061023>'
+
+    next_match = search_next('nice')
+    if next_match is not None:
+        msg = f'{msg}\n{next_match}'
+
+    await ctx.channel.send(msg)
+
+@bot.command(name='has')
+async def cmd_has(ctx):
+    msg = 'Has 臉書粉絲團\nhttps://www.facebook.com/SC2Has-273980189818092/'
+    next_match = search_next('has')
+    if next_match is not None:
+        msg = f'{msg}\n{next_match}'
+
+    await ctx.channel.send(msg)
+
+@bot.command(name='hui')
+async def cmd_hui(ctx):
+    await ctx.channel.send('輝哥臉書粉絲團\nhttps://www.facebook.com/hui379/')
+
+@bot.command(name='sobad')
+async def cmd_sobad(ctx):
+    await ctx.channel.send('師哥臉書粉絲團\nhttps://www.facebook.com/rushsobad')
 
 @bot.command(name='az', aliases=['azure'])
 async def cmd_az(ctx):
@@ -130,7 +167,12 @@ async def cmd_az(ctx):
 
 @bot.command(name='rex')
 async def cmd_rex(ctx):
-    await ctx.channel.send('Rex 小雷雷臉書粉絲團\nhttps://www.facebook.com/RexStorMWTF')
+    msg = 'Rex 小雷雷臉書粉絲團\nhttps://www.facebook.com/RexStorMWTF'
+    next_match = search_next('rex')
+    if next_match is not None:
+        msg = f'{msg}\n{next_match}'
+
+    await ctx.channel.send(msg)
 
 @bot.command(name='阿吉')
 async def cmd_ahchi(ctx):
