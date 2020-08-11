@@ -66,7 +66,8 @@ async def on_message(ctx):
         await ctx.channel.send(
             '`!近期比賽` 可以列出最近的星海比賽\n'
             '`!近期可報名` 可以列出最近可以報名的星海比賽\n\n'
-            '其他指令請參考 https://git.io/JJuba'
+            '其他指令請參考 https://git.io/JJuba\n'
+            '邀請藍兔小粉絲加入你的 Discord 群組 <https://tinyurl.com/ALGS-Fan>'
         )
 
     await commands.Bot.on_message(bot, ctx)
@@ -132,10 +133,7 @@ async def cmd_summon(ctx, *arg):
         return
 
     result = search_next(player)
-    if result is not None:
-        await ctx.channel.send(result)
-    else:
-        await ctx.channel.send(f'沒有找到 {player} 最近的比賽 QQ')
+    await ctx.channel.send(result)
 
 @bot.command(name='nice')
 async def cmd_nice(ctx):
@@ -155,13 +153,24 @@ async def cmd_nice(ctx):
 
     await ctx.channel.send(msg)
 
+@bot.command(name='nice比賽')
+async def cmd_nice_match(ctx):
+    msg = search_next('Nice')
+    await ctx.channel.send(msg)
+
+@bot.command(name='has比賽')
+async def cmd_has_match(ctx):
+    msg = search_next('Has')
+    await ctx.channel.send(msg)
+
+@bot.command(name='rex比賽')
+async def cmd_rex_match(ctx):
+    msg = search_next('Rex')
+    await ctx.channel.send(msg)
+
 @bot.command(name='has')
 async def cmd_has(ctx):
     msg = 'Has 臉書粉絲團\nhttps://www.facebook.com/SC2Has-273980189818092/'
-    next_match = search_next('has')
-    if next_match is not None:
-        msg = f'{msg}\n{next_match}'
-
     await ctx.channel.send(msg)
 
 @bot.command(name='hui')
@@ -179,10 +188,6 @@ async def cmd_az(ctx):
 @bot.command(name='rex')
 async def cmd_rex(ctx):
     msg = 'Rex 小雷雷臉書粉絲團\nhttps://www.facebook.com/RexStorMWTF'
-    next_match = search_next('rex')
-    if next_match is not None:
-        msg = f'{msg}\n{next_match}'
-
     await ctx.channel.send(msg)
 
 @bot.command(name='阿吉')
