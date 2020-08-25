@@ -122,8 +122,12 @@ async def cmd_algs(ctx):
     await ctx.channel.send('藍兔電子競技工作室臉書粉絲團\nhttps://www.facebook.com/ALGSSC2/')
 
 @bot.command(name='星途', aliases=['pos'])
-async def pos(ctx):
+async def cmd_pos(ctx):
     await ctx.channel.send('星途(Path of Star) - 臺灣《星海爭霸II》募資邀請賽\nhttps://www.zeczec.com/projects/pathofstar')
+
+@bot.command(name='line')
+async def cmd_line(ctx):
+    await ctx.channel.send('臺灣星海匿名 Line 社群永遠歡迎新的指揮官 :arrow_right: https://algssc2.pse.is/twscline')
 
 @bot.command(name='召喚')
 async def cmd_summon(ctx, *arg):
