@@ -34,6 +34,7 @@ bot = commands.Bot(
 )
 
 tc = TWSCCalendar()
+samatch_str = json.load(open('./samatch.json', 'r', encoding='UTF-8'))
 
 def log(msg):
     logger.info(msg)
@@ -111,6 +112,14 @@ async def cmd_next(ctx):
 @bot.command(name='報名')
 async def cmd_sign(ctx):
     await ctx.channel.send(tc.get_next_sign())
+
+@bot.command(name='samatch')
+async def samatch(ctx):
+    await ctx.send(samatch_str['samatch'])
+
+@bot.command(name='pov')
+async def pov(ctx):
+    await ctx.send(samatch_str['pov'])
 
 @bot.command(name='哈囉', aliases=['hello'])
 async def cmd_testing(ctx):
