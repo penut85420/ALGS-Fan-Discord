@@ -133,7 +133,11 @@ async def cmd_algs(ctx):
 
 @bot.command(name='星途', aliases=['pos'])
 async def cmd_pos(ctx):
-    await ctx.channel.send('星途(Path of Star) - 臺灣《星海爭霸II》募資邀請賽\nhttps://www.zeczec.com/projects/pathofstar')
+    await ctx.channel.send(
+        '【星途(Path of Star)】臺灣《星海爭霸II》募資積分邀請賽\n'
+        '募資頁面 - https://www.zeczec.com/projects/pathofstar\n'
+        '選手積分狀況 - https://algssc2.pse.is/possheets'
+    )
 
 @bot.command(name='line')
 async def cmd_line(ctx):
