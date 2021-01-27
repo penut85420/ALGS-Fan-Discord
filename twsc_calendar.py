@@ -61,6 +61,7 @@ class TWSCCalendar:
         return '\n'.join(results)
 
     def parse_event(self, e):
+        print(e)
         title = e['summary'].replace('[SC2] ', '')
         start = self.get_date(e, 'start')
         end = self.get_date(e, 'end')
@@ -85,7 +86,6 @@ class TWSCCalendar:
     def get_date(self, e, key):
         date = e[key].get('dateTime', e[key].get('date'))
         date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S+08:00')
-        date = date - datetime.timedelta(hours=8)
 
         return date
 
