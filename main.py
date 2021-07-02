@@ -1,8 +1,6 @@
 import os
 import sys
 import json
-import random
-os.environ['LOGURU_AUTOINIT'] = 'False'
 import discord
 from loguru import logger
 from discord.ext import commands
@@ -37,9 +35,6 @@ bot = commands.Bot(
 tc = TWSCCalendar()
 samatch_str = json.load(open('./samatch.json', 'r', encoding='UTF-8'))
 
-def log(msg):
-    logger.info(msg)
-
 async def get_channel(chid):
     for ch in bot.get_all_channels():
         if ch.id == chid:
@@ -48,7 +43,7 @@ async def get_channel(chid):
 
 @bot.event
 async def on_ready():
-    log(f'{bot.user} Ready!')
+    logger.info(f'{bot.user} Ready!')
     if os.path.exists('flag'):
         chid = int(open('flag', 'r').read())
         await get_channel(chid)
@@ -59,10 +54,10 @@ async def on_message(ctx):
     msg = ctx.content.replace('\n', ' ')
 
     if ctx.content.startswith('!'):
-        log(f'{ctx.author}: {msg}')
+        logger.info(f'{ctx.author}: {msg}')
 
     if ctx.author == bot.user:
-        log(f'{ctx.author}: {msg}')
+        logger.info(f'{ctx.author}: {msg}')
 
     if bot.user in ctx.mentions:
         await ctx.channel.send(
@@ -75,10 +70,10 @@ async def on_message(ctx):
     await commands.Bot.on_message(bot, ctx)
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(_, error):
     if isinstance(error, CommandNotFound):
         return
-    log(str(error).replace('\n', ' | '))
+    logger.error(str(error).replace('\n', ' | '))
 
 @bot.command(name='近期比賽')
 async def cmd_recent(ctx):
@@ -265,10 +260,11 @@ def set_logger():
     logger.add(sys.stderr, level='INFO', format=log_format)
     logger.add(
         f'./logs/algs.log',
-        rotation='7 day',
-        retention='30 days',
+        rotation='1 day',
+        retention='7 days',
         level='INFO',
         encoding='UTF-8',
+        compression='gz',
         format=log_format
     )
 
